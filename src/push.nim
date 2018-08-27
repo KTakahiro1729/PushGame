@@ -1,4 +1,4 @@
-import tables, algorithm, strutils
+import tables, algorithm, strutils, sequtils
 
 type
   InputAction = enum
@@ -25,10 +25,13 @@ type
     pos* : Pos
   BoxTarget* = ref object
     pos* : Pos
-  Map*[width, height, nBox : static[int]] = object
+  Map* = ref object
+    height : int
+    width : int
     player* : Player 
-    boxes* : array[nBox, Box]
-    boxTargets* : array[nBox, BoxTarget]
+    nBox : int
+    boxes* : seq[Box]
+    boxTargets* : seq[BoxTarget]
 
 
 const directDiffTable = toTable[Direct, tuple[x, y: int]](
@@ -49,21 +52,24 @@ proc `+`(pos0, pos1: Pos) :Pos =
 
 proc `$`(box:Box):string = $ box.pos
 
-proc newMap*[width, height, nBox]() : Map[width, height, nBox] =
+proc newMap*(width, height, nBox: int) : Map =
   if width * height < nBox + 1:
     raise newException(ValueError, "Map is too small")
   var 
     player : Player = new(Player)
-    boxes : array[nBox, Box]
-    boxTargets: array[nBox, BoxTarget]
+    boxes = newSeq[Box](nBox)
+    boxTargets = newSeq[BoxTarget](nBox)
   player.pos = 0.nthCoord(width, height)
   for iBox in 0..<nBox:
     boxes[iBox] = new(Box)
     boxTargets[iBox] = new(BoxTarget)
     boxes[iBox].pos = (iBox + 1).nthCoord(width, height)
     boxTargets[iBox].pos = (iBox + 1).nthCoord(width, height)
-  result = Map[width, height, nBox](
-    player: player, 
+  result = Map(
+    width: width,
+    height: height,
+    player: player,
+    nBox: nBox, 
     boxes: boxes, 
     boxTargets: boxTargets)
 
@@ -83,13 +89,13 @@ proc getDestinStatus(map: Map, destin: Pos):
   let cw = proc (value, size:int):bool = 0 <= value and value < size
   if not (destin.x.cw(map.width) and destin.y.cw(map.height)):
     return (HitWall, -1)
-  
+
   # check box
   let iBox = map.getIBoxAt(destin)
   if iBox == -1:
     return (Empty, -1)
   return (HitBox, iBox)
-  
+
 
 proc movePlayer*(map: Map, direct: Direct) = 
   let destin = map.player.pos + directDiffTable[direct]
@@ -119,7 +125,7 @@ proc checkBoxOnTarget*(map: Map): bool =
 
 
 proc getVisualMap(map: Map): string =
-  var visualMap : array[map.height, array[map.width, char]]
+  var visualMap = newSeqWith(map.height, newSeq[char](map.width))
   for iX in 0..<map.width:
     for iY in 0..<map.height:
       visualMap[iY][iX] = ' '
@@ -148,7 +154,7 @@ proc getVisualMap(map: Map): string =
       else:
         discard
 
-  
+
   result = ""
   let hBorder = '#'.repeat(map.width + 2)
   # draw border
@@ -173,8 +179,8 @@ proc getInput* (): InputAction =
       result = quitGame
     else:
       result = invalid
-      
-    
+
+
 proc updateGame* (map: Map, inputAction: InputAction) =
   case inputAction:
     of moveUp:
@@ -197,19 +203,22 @@ proc draw*(map: Map) =
 
 when isMainModule:
   block:
-    var mp = newMap[6, 3, 2]()
+    var mp = newMap(6,3,2)
     doAssert mp.nBox == 2
     doAssert mp.boxes.len == 2
     doAssert mp.boxTargets.len == 2
+    doAssert mp.width == 6
+    doAssert mp.height == 3
+    doAssert mp.nBox == 2
   block:
-    var mp = newMap[6,3,2]()
+    var mp = newMap(6,3,2)
     doAssert mp.player.pos == (0,0)
   block:
-    var mp = newMap[6,3,2]()
+    var mp = newMap(6,3,2)
     doAssert mp.getDestinStatus((1,0)) == (HitBox, 0)
     doAssert mp.getDestinStatus((2,0)) == (HitBox, 1)
   block:
-    var mp = newMap[6,3,2]()
+    var mp = newMap(6,3,2)
     mp.boxes[1].pos = (0,1)
     mp.movePlayer(down)
     doAssert mp.player.pos == (0,1)
@@ -218,7 +227,7 @@ when isMainModule:
     doAssert mp.player.pos == (0,1)
     doAssert mp.boxes[1].pos == (0,2)
   block:
-    var mp = newMap[5,2,2]()
+    var mp = newMap(5,2,2)
     doAssert mp.checkBoxOnTarget()
     mp.boxes[0].pos = (0,1)
     doAssert (not mp.checkBoxOnTarget())
@@ -226,9 +235,15 @@ when isMainModule:
     mp.boxes[1].pos = (1,0)
     doAssert mp.checkBoxOnTarget()
   block:
-    var mp = newMap[2,3,2]()
+    var mp = newMap(2,3,2)
     doAssert mp.getVisualMap() == """####
     #P@#
     #@ #
     #  #
+    ####""".unindent()
+    mp.movePlayer(down)
+    doAssert mp.getVisualMap() == """####
+    # @#
+    #R #
+    #o #
     ####""".unindent()

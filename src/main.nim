@@ -1,6 +1,6 @@
-import push
+import push2
 
-var map = newMap[6,3,2]()
+var map = newMap(6,3,2)
 map.player.pos = (4,0)
 map.boxes[0].pos = (0,1)
 map.boxes[1].pos = (1,1)
