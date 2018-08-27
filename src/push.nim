@@ -1,4 +1,4 @@
-import tables, algorithm, strutils, sequtils
+import tables, algorithm, strutils, sequtils, strformat
 
 type
   InputAction = enum
@@ -178,6 +178,54 @@ proc getVisualMap(map: Map): string =
     result &= "#" & visualMap[iY].join() & "#\n"
   result &= hBorder
 
+proc readStringMap* (stringMap: string): Map =
+  let 
+    rows = stringMap.splitLines
+    width = rows[0].len() - 2 
+    height = rows.len() - 2 
+  var
+    player = Player()
+    boxes = newSeq[Box](0)
+    boxTargets = newSeq[BoxTarget](0)
+    obstacles = newSeq[Obstacle](0)
+    foundPlayer = false
+    multiPlayerError = newException(ValueError, "Map has multiple Players")
+  for y, row in rows[1..height]:
+    for x, square in row[1..width]:
+      # echo (x:x, y:y), square
+      case square:
+        of ' ':
+          discard
+        of 'P':
+          if foundPlayer: raise multiPlayerError
+          player.pos = (x, y)
+        of 'R':
+          if foundPlayer: raise multiPlayerError
+          player.pos = (x, y)
+          boxTargets.add(BoxTarget(pos:(x,y)))
+        of 'o':
+          boxes.add(Box(pos:(x,y)))
+        of '@':
+          boxes.add(Box(pos:(x,y)))
+          boxTargets.add(BoxTarget(pos:(x,y)))
+        of '.':
+          boxTargets.add(BoxTarget(pos:(x,y)))
+        of '#':
+          obstacles.add(Obstacle(pos:(x,y)))
+        else:
+          raise newException(ValueError, "Unknown Map indicator: " & square)
+  if boxes.len != boxTargets.len:
+    raise newException(ValueError, 
+      fmt"Check the number of box({boxes.len})and box targets({boxTargets.len})")
+  result = Map(
+    width: width,
+    height: height,
+    player: player,
+    nBox: boxes.len, 
+    boxes: boxes, 
+    boxTargets: boxTargets,
+    obstacles: obstacles)
+          
 proc getInput* (): InputAction =
   let input = readLine(stdin)
   echo "input is ", input 
