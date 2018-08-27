@@ -1,13 +1,10 @@
 {"compile":[
-["/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/main.c", "gcc -c  -w  -I/home/allosteric/.choosenim/toolchains/nim-0.18.0/lib -o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/main.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/main.c"],
-["/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_system.c", "gcc -c  -w  -I/home/allosteric/.choosenim/toolchains/nim-0.18.0/lib -o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_system.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_system.c"],
-["/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/push2.c", "gcc -c  -w  -I/home/allosteric/.choosenim/toolchains/nim-0.18.0/lib -o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/push2.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/push2.c"],
-["/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_strutils.c", "gcc -c  -w  -I/home/allosteric/.choosenim/toolchains/nim-0.18.0/lib -o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_strutils.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_strutils.c"]
+]
 ],
 "link":[
 "/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/main.o",
 "/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_system.o",
-"/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/push2.o",
+"/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/push.o",
 "/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_tables.o",
 "/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_algorithm.o",
 "/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_strutils.o",
@@ -17,5 +14,5 @@
 "/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_parseutils.o",
 "/media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_macros.o"
 ],
-"linkcmd": "gcc   -o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/main  /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/main.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_system.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/push2.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_tables.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_algorithm.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_strutils.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_sequtils.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_hashes.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_math.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_parseutils.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_macros.o  -lm   -ldl"
+"linkcmd": "gcc   -o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/main  /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/main.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_system.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/push.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_tables.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_algorithm.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_strutils.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_sequtils.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_hashes.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_math.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_parseutils.o /media/allosteric/Data/Arts/nim/BeforeGamer/Push/src/nimcache/stdlib_macros.o  -lm   -ldl"
 }

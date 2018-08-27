@@ -25,6 +25,8 @@ type
     pos* : Pos
   BoxTarget* = ref object
     pos* : Pos
+  Obstacle* = ref object
+    pos* : Pos
   Map* = ref object
     height : int
     width : int
@@ -32,7 +34,7 @@ type
     nBox : int
     boxes* : seq[Box]
     boxTargets* : seq[BoxTarget]
-
+    obstacles*: seq[Obstacle]
 
 const directDiffTable = toTable[Direct, tuple[x, y: int]](
   {
@@ -52,26 +54,31 @@ proc `+`(pos0, pos1: Pos) :Pos =
 
 proc `$`(box:Box):string = $ box.pos
 
-proc newMap*(width, height, nBox: int) : Map =
-  if width * height < nBox + 1:
+proc newMap*(width, height, nBox: int, nObs = 0) : Map =
+  if width * height < nBox + nObs + 1:
     raise newException(ValueError, "Map is too small")
   var 
     player : Player = new(Player)
     boxes = newSeq[Box](nBox)
     boxTargets = newSeq[BoxTarget](nBox)
+    obstacles = newSeq[Obstacle](nObs)
   player.pos = 0.nthCoord(width, height)
   for iBox in 0..<nBox:
     boxes[iBox] = new(Box)
     boxTargets[iBox] = new(BoxTarget)
     boxes[iBox].pos = (iBox + 1).nthCoord(width, height)
     boxTargets[iBox].pos = (iBox + 1).nthCoord(width, height)
+  for iObs in 0..<nObs:
+    obstacles[iObs] = new(Obstacle)
+    obstacles[iObs].pos = (iObs + nObs + 2).nthCoord(width, height)
   result = Map(
     width: width,
     height: height,
     player: player,
     nBox: nBox, 
     boxes: boxes, 
-    boxTargets: boxTargets)
+    boxTargets: boxTargets,
+    obstacles: obstacles)
 
 proc getIBoxAt(map: Map, pos: Pos): int =
   ##[ when box in pos, result.iBox == (index to box) else, iBox == -1
@@ -89,6 +96,11 @@ proc getDestinStatus(map: Map, destin: Pos):
   let cw = proc (value, size:int):bool = 0 <= value and value < size
   if not (destin.x.cw(map.width) and destin.y.cw(map.height)):
     return (HitWall, -1)
+  
+  # check obstacle
+  for obstacle in map.obstacles:
+    if obstacle.pos == destin:
+      return (HitWall, -1)
 
   # check box
   let iBox = map.getIBoxAt(destin)
@@ -133,6 +145,9 @@ proc getVisualMap(map: Map): string =
   # draw boxtargets
   for boxTarget in map.boxTargets:
     visualMap[boxTarget.pos.y][boxTarget.pos.x] = '.'
+  # draw obstacle
+  for obstacle in map.obstacles:
+    visualMap[obstacle.pos.y][obstacle.pos.x] = '#'
 
   # draw player
   let (pX, pY) = map.player.pos
@@ -245,5 +260,18 @@ when isMainModule:
     doAssert mp.getVisualMap() == """####
     # @#
     #R #
+    #o #
+    ####""".unindent()
+  block:
+    var mp = newMap(2,3,2,1)
+    doAssert mp.getVisualMap() == """####
+    #P@#
+    #@##
+    #  #
+    ####""".unindent()
+    mp.movePlayer(down)
+    doAssert mp.getVisualMap() == """####
+    # @#
+    #R##
     #o #
     ####""".unindent()
